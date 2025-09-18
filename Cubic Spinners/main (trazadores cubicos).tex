@@ -1,0 +1,337 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts{}
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\usepackage{url}
+\begin{document}
+
+\title{Trazadores Cubicos  (cubic splines) \\}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} German Eduardo De Armas Castaño }
+	\IEEEauthorblockA{\textit{Universidad Tecnologica de Bolivar} \\
+		\textit{UTB}\\
+		Cartagena, Colombia \\
+		gdearmas@utb.edu.co}}
+
+\maketitle
+
+\bibliographystyle{IEEEtran}
+
+\begin{abstract}
+A cubic spline is a tool used in numerical interpolation, particularly in the interpolation of tabulated data. It is a smooth function that passes through a set of predefined data points. The main idea behind a cubic spline is to fit cubic curves between adjacent points so that the resulting function is continuous and has continuous derivatives up to the second order.
+The same mathematical ideas used for computing "spline" curves can be extended to allow us to compute "spline" surfaces.
+The application of these mathematical ideas is rather popular. Spline functions are central to computer graphics disciplines. Spline curves and surfaces are used in computer graphics renderings for both real and imaginary objects. Computer-aided-design (CAD) systems depend on algorithms for computing spline functions, and splines are used in numerical analysis and statistics. Thus the construction of movies and computer games travels side-by-side with the art of automobile design, sail construction, and architecture; and statisticians and applied mathematicians use splines as everyday computational tools, often divorced from graphic images.
+The functions that have been most frequently used for the mathematical incarnation of splines are the simple univariate or bivariate polynomials, well-known to students of mathematics. Cubic polynomials hold a special
+
+\end{abstract}
+
+\section{Introducción}
+Un trazador cúbico, también conocido como spline cúbico, es una técnica matemática que se utiliza para aproximar una función f(x) a partir de un conjunto de puntos de datos dados.
+
+La idea principal es construir una curva suave que pase por todos los puntos de datos y que cumpla con ciertas condiciones de continuidad y derivabilidad.
+
+Para ello, la curva se divide en segmentos polinómicos de tercer grado (es decir, cúbicos), conectados de manera que se satisfagan las condiciones mencionadas.
+
+En este documento, exploraremos los fundamentos teóricos, aplicaciones prácticas y el intrincado equilibrio que logran entre precisión y eficiencia computacional de los trazadores cubicos.
+
+
+
+\section{Teoría del método}
+Los trazadores cúbicos (cubic splines) naturales se utilizan para crear una función que interpola un conjunto de puntos de datos. Esta función consiste en una unión de polinomios cúbicos, uno para cada intervalo, y está construido para ser una función con  primera y segunda derivada continuas. El ’spline’ cúbico natural también
+tiene su segunda derivada igual a cero en la coordenada x del primer punto y el último punto de la tabla de datos.
+\cite{Trazadores_cúbicos_2014}.
+\begin{figure} [h]
+            \centering
+            \includegraphics[width=\linewidth]{imagenes/imagen1.png}
+            \caption{Trazador Cubico}
+            \label{fig:fig1 }
+       \end{figure}
+
+Un trazador cúbico $S$ es una función a trozos que interpola a $f$ en los
+$n + 1$ puntos $(x_0, y_0), (x_1, y_1), (x_2, y_2), \dots, (x_n, y_n)$
+(con $a = x_0 < x_1 < \cdots < x_n = b$). S es definida de la siguiente manera,
+
+\subsection{Trazadores Lineales}
+
+Dos puntos distintos cualquiera determinan un segmento de recta, de esta
+manera los trazadores de primer grado para un grupo de datos ordenados
+pueden definirse como un grupo de funciones lineales
+
+\begin{align*}
+	f(x)   & \text{=} f(x_{0}) + m_{0}(x - x_{0})             & x_{0} \leq x \leq x_{1}     \\
+	f(x)   & \text{=} f(x_{1}) + m_{1}(x - x_{1}),            & x_{1} \leq x \leq x_{2}     \\
+	\vdots &                                           &                             \\
+	f(x)   & \text{=} f(x_{n - 1}) + m_{n - 1}(x - x_{n - 1}) & x_{n - 1} \leq x \leq x_{n}
+\end{align*}
+
+Donde $m$ es la pendiente de la recta,
+
+\begin{align*}
+	m \text{=} \frac{f(x_{i + 1}) - f(x_{i})}{x_{i + 1} - x_{i}}
+\end{align*}
+
+Es crucial destacar que los trazadores de primer grado no presentan
+suavidad. Es decir, en los puntos donde convergen dos trazadores
+\textit{(conocidos como nodos)}, la pendiente experimenta un cambio brusco.
+Formalmente, la primera derivada de la función es discontinua en estos
+puntos. Esta limitación se supera mediante el empleo de trazadores
+polinomiales de grado superior, que garantizan suavidad en los nodos al
+igualar las derivadas en esos puntos.
+
+\subsection{Trazadores Cuadráticos}
+
+Para garantizar la continuidad de las derivadas de orden m en los nodos,
+es necesario emplear un trazador de al menos un grado de m + 1. En el
+caso específico de los trazadores cuadráticos, se busca obtener un
+polinomio de segundo grado para cada intervalo entre los datos. De manera
+general, el polinomio en cada intervalo se representa como:
+
+\begin{align}
+	f_{i}(x) \text{=}  a_{i}{x}^{2} + b_{i}x + c_{i}
+	\label{eq:cuadratic_equation}
+\end{align}
+
+Los trazadores cuadráticos, requieren $3n$ ecuaciones o condiciones
+para evaluar las incógnitas, estas son:
+ Para $i = 2$, cada una proporciona $n - 1$, en total $2n - 2$ condiciones
+
+	\item \textit{La primera y la última función deben pasar a través de los puntos extremos.}
+
+	      \begin{align}
+		      a_{1}{x_{0}}^{2} + b_{1}x_{0} + c_{1} \text{=} f(x_{0})
+		      \label{eq:18.31}
+	      \end{align}
+
+	      \begin{align}
+		      a_{n}{x_{n}}^{2} + b_{n}x_{n} + c_{n} \text{=} f(x_{n})
+		      \label{eq:18.32}
+	      \end{align}
+
+	      En total tenemos, $2n - 2 + 2 = 2n$ condiciones \\
+
+	\item \textit{Las primeras derivadas en los nodos interiores deben ser iguales} \\
+
+	      La derivada de la ecuación(\ref{eq:cuadratic_equation}) es,
+
+	      \begin{align*}
+		      f'(x) \text{=} 2ax + b
+	      \end{align*}
+         Por lo tanto, la condición se representa como,
+
+	      \begin{align}
+		      2a_{i - 1}x_{i - 1} + b_{i - 1} \text{=} 2a_{i}x_{i - 1} + b_{i}
+		      \label{eq:18.33}
+	      \end{align}
+
+\begin{enumerate}
+	\item \textit{Los valores de la función deben ser los mismos en los puntos
+		      donde se unen dos polinomios consecutivos}
+
+	      Esta condición se representa como,
+
+	      \begin{align}
+		      a_{i - 1}{x_{i - 1}}^{2} + b_{i - 1}x_{i - 1} + c_{i - 1} \text{=} f(x_{i - 1})
+		      \label{eq:18.29}
+	      \end{align}
+
+	      \begin{align}
+		      a_{i}{x_{i - 1}}^{2} + b_{i}x_{i - 1} + c_{i} \text{=} f(x_{i - 1})
+		      \label{eq:18.30}
+	      \end{align}
+Para $i = 2$, esto representa otras $n - 1$ condiciones, con
+	      un total de $2n + n - 1 = 3n - 1$
+
+
+       
+\end{enumerate}
+
+\section{Condiciones para calcularlo }
+
+\begin{enumerate}
+    \item Los polinomios pasan por los puntos: \\ $P_k (xk)$ = $f(xk)$ 
+    con k = $[0,1,...]$ y $P_{n - 1} (xn)$ = $f(xn)$
+    \item  Continuidad en los nodos interiores: \\
+     $P_k{x_k + 1}$ = $P_{k + 1}(x_k +1)$ con k = $[0,1,...]$.
+     
+    \item Derivabilidad en los nodos interiores: \\$P_k'{x_k + 1}$ = $P_{k + 1}'(x_k +1)$ con k = $[0,1,...]$.
+    
+    \item Continuidad de la primera derivada para conservar la concavidad en la vecindad de los nodos interiores:\\
+    $P_k''{x_k + 1}$ = $P_{k + 1}''(x_k +1)$ con k = $[0,1,...]$.
+    
+    \item Condiciòn de frontera natural $(P_0''(X_0)$ = $0$ y $P_{n-1}(X_n)'$ = $0$) o frontera sujeta $(P_0'(X_0)$ = $f'(X_0)$ y $P_{n-1}(X_n)'$ = $f'(X_n)$
+    
+\end{enumerate}
+
+\section{Obtencion de trazadores cubicos }
+
+El primer paso en la obtención (Cheney y Kincaid, 1985) se
+considera la observación de cómo cada par de nodos está unida
+por una cúbica; la segunda derivada dentro de cada intervalo es
+una línea recta. La ecuación \\
+$ f_i(X)$ = $a_i(X)^3 + b_i(X)^2 + c_i(X) + d_i$
+se puede derivar dos veces
+para verificar esta observación. Con esta base, la segunda derivada se representa mediante un polinomio de interpolación de
+Lagrange de primer grado \\
+
+\begin{multline}
+	f_{i} \text{=} \frac{f_{i}''(x_{i - 1})}{6 (x_{i} - x_{i - 1})}{(x_{i} - x)}^{3}
+	+ \frac{f_{i}''(x_{i})}{6 (x_{i} - x_{i - 1})}{(x - x_{i - 1})}^{3} \\
+	+ [\frac{f(x_{i - 1})}{x_{i} - x_{i - 1}} - \frac{f''(x_{i - 1}) (x_{i} - x_{i - 1})}{6}](x_{i} - x) \\
+	+ [\frac{f(x_{i})}{x_{i} - x_{i - 1}} - \frac{f''(x_{i}) (x_{i} - x_{i - 1})}{6}](x - x_{i - 1}) \\
+	\label{eq:C.18.36}
+ \end{multline}
+
+donde $f_i''(X)$ es el valor de la segunda derivada en cualquier
+punto x dentro del i-ésimo intervalo. Así, esta ecuación es una
+línea recta, que une la segunda derivada en el primer nodo $f_i''(X_{i-1}$ con la segunda derivada en el segundo nodo $f_i''(X_{i}$ Después, la ecuación anterior se integra dos veces para obtener una expresion expresión de $f_i(X)$. Sin embargo, esta expresión contendrá dos constantes de integración desconocidas. Dichas constantes se evalúan tomando las condiciones de igualdad de
+las funciones $f_(x)$ debe ser igual a $f(x_({i-1})$ en $x_{i-1}$ y $f(x)$ debe ser igual a $f(x_i)$ en $x_i$.Al realizar estas evaluaciones , se tiene la siguiente ecuacion cubica: \\
+ \begin{multline}
+	f_{i}(x) \text{=} \frac{f_{i}''(x_{i - 1})}{6 (x_{i} - x_{i - 1})} {(x_{i} - x)}^{3} \\
+	+ \frac{f_{i}''(x)}{6 (x_{i} - x_{i - 1})} {(x - x_{i - 1})}^{3} \\
+	+ [\frac{f(x_{i - 1})}{x_{i} - x_{i - 1}} - \frac{f''(x_{i - 1}) (x_{i} - x_{i - 1})}{6}] (x_{i} - x) \\
+	+ [\frac{f(x_{i})}{x_{i} - x_{i - 1}} - \frac{f''(x_{i})(x_{i} - x_{i - 1})}{6}](x - x_{i - 1}) \\
+	\label{eq:C.18.3.2}
+\end{multline}
+Las segundas derivadas se evalúan tomando la condición de
+que las primeras derivadas deben ser continuas en los nodos:
+
+\begin{align}
+	f_{i - 1}''(x_{i}) \text{=} f_{i}'(x_{i})
+	\label{eq:C.18.3.3}
+\end{align}
+La ecuación~(\ref{eq:C.18.3.2}) se deriva para ofrecer una expresión
+de la primera derivada. Si se hace esto tanto para el $(i - 1)$-ésimo,
+como para i-ésimo intervalos, y los dos resultados se igualan de
+para llegar a la siguiente relación:
+
+\begin{multline}
+	(x_{i} - x_{i - 1}) f''(x_{i - 1}) + 2(x_{i + 1} - x_{i - 1})f''(x_{i}) \\
+	+ (x_{i + 1} - x_{i}) f''(x_{i + 1}) \\
+	\text{=} \frac{6}{x_{i + 1} - x_{i}} [f(x_{i + 1}) - f(x_{i})] \\
+	+ \frac{6}{x_{i} - x_{i - 1}} [f(x_{i - 1}) - f(x_{i})]
+	\label{eq:C.18.3.4}
+\end{multline}
+Si la ecuación (\ref{eq:C.18.3.4}) se escribe para todos los nodos interiores, se obtienen n – 1 ecuaciones simultáneas con n + 1 segundas
+derivadas desconocidas. Sin embargo, como ésta es un trazador
+cúbico natural, las segundas derivadas en los nodos extremos son
+cero y el problema se reduce a n – 1 ecuaciones con n – 1 incógnitas. Además, observe que el sistema de ecuaciones será tridiagonal. Así, no sólo se redujo el número de ecuaciones, sino que
+las organizamos en una forma extremadamente fácil de resolver.
+
+
+\section{Planteacion del problema}
+
+Las incógnitas se evalúan empleando la siguiente ecuación:
+
+
+\begin{table}[h]
+	\begin{tabularx}{\linewidth}{|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+		\hline
+		\textbf{X} & \textbf{Y} \\ \hline
+        $3,0$      & $2,5$      \\ \hline
+        $4,5$      & $1$     \\ \hline
+        $7$      & $2,5$     \\ \hline
+	\end{tabularx}
+	\label{tab:ejemplo_trazadores_cubicos}~\caption{Tabla de datos}
+\end{table}
+
+
+El primer paso consiste en utilizar la ecuación~(\ref{eq:C.18.3.2})
+para generar el conjunto de ecuaciones simultaneas que se
+utilizaran para determinar las segundas derivadas en los nodos.
+
+Primer nodo interior:
+
+Estos valores se sustituyen en la ecuación~(\ref{eq:C.18.3.2}):
+
+\begin{multline*}
+	(4,5 - 3)f''(3) + 2(7 - 3)f''(4,5) + (7 - 4,5)f''(7) \\
+	\text{=} \frac{6}{7 - 4,5}(2,5 - 1) + \frac{6}{4,5 - 3}(2,5 - 1)
+\end{multline*}
+
+
+El primer paso consiste en utilizar la ecuación para generar el conjunto de ecuaciones simultaneas que se
+utilizaran para determinar las segundas derivadas en los nodos.
+
+Primer nodo interior:
+
+Estos valores se sustituyen en la ecuación~(\ref{eq:C.18.3.2}):
+
+\begin{multline*}
+	(4,5 - 3)f''(3) + 2(7 - 3)f''(4,5) + (7 - 4,5)f''(7) \\
+	\text{=} \frac{6}{7 - 4,5}(2,5 - 1) + \frac{6}{4,5 - 3}(2,5 - 1)
+\end{multline*}
+Debido a la condición, $f''(3)$ = $0$, la ecuación se reduce a
+
+\begin{align*}
+	8f''(4,5) + 2,5f''(7,8) \text{=}  9,6
+\end{align*}
+
+De la misma manera, obtenemos
+
+\begin{align*}
+	2,5f''(4,5) + 9f''(7,8) \text{=} -9,6
+\end{align*}
+
+Estas ecuaciones se resuelven simultáneamente
+
+\begin{align*}
+	f''(4,5) & \text{=} 1,67709  \\
+	f''(7)   & \text{=} -1,53308
+\end{align*}
+
+Luego se sustituyen estos valores en la ecuación~(\ref{eq:C.18.36})
+para obtener
+
+\begin{multline*}
+	f_{1} \text{=} \frac{1,67709}{6(4,5 - 3)}{(x - 3)}^{3}
+	+ \frac{2,5}{4,5 - 3}(4,5 - x) \\
+	+ [\frac{1}{4,5 - 3} - \frac{1,67709 (4,5 - 3)}{6}](x - 3)
+\end{multline*}
+
+
+	$f_{1}$ = $0,1865 {(x - 3)}^{3} + 1,6667 (4,5 - x) + 0,0246 (x - 2)$ \\
+
+
+De esta manera se hacen sustituciones similares para tener las
+ecuaciones del segundo y tercer intervalo
+
+\begin{multline*}
+	f_{2}(x) \text{=} 0,1119 {(7 - x)}^{3} - 0.1022 {(x - 4,5)}^{3} \\
+	- 0,2996 (7 - x) + 1,6338 (x - 4,5) \\
+	f_{3}(x) \text{=} -0,1277{(9 - x)}^{3} + 1,7610 (9 - x) + 0,25(x - 7)
+\end{multline*}
+Lo que obtenemos es un trazador cúbico único.
+\begin{figure} [h]
+            \centering
+            \includegraphics[width=\linewidth]{imagenes/imagen2.png}
+            \caption{}
+            \label{fig:fig1 }
+       \end{figure}
+
+
+\section{Conclusiones}
+
+Los trazadores cúbicos representan una herramienta esencial en el campo de la interpolación numérica. A través de su capacidad para ajustar curvas suaves y continuas entre puntos de datos, los trazadores cúbicos nos permiten obtener una aproximación precisa de funciones desconocidas a partir de datos tabulados. Su aplicación se extiende a una amplia gama de disciplinas, desde la ingeniería y la física hasta la ciencia de los datos y la computación gráfica.
+
+Además de su capacidad para proporcionar una interpolación suave y continua, los trazadores cúbicos ofrecen flexibilidad en términos de ajuste de curvas, lo que permite adaptarse a diferentes conjuntos de datos como pasa con los trazadores naturales o suavizados, adaptándose así a las necesidades
+específicas del problema.. Sin embargo, es importante tener en cuenta que el uso de trazadores cúbicos también conlleva ciertas consideraciones, como la necesidad de seleccionar adecuadamente los puntos de control y evaluar el comportamiento de la función interpolada en regiones fuera del rango de datos conocidos.
+
+
+
+\nocite{chapra}
+\nocite{analisisnumerico}
+\nocite{metodosnumericos}
+\nocite{slideshare-trazadores}
+\nocite{cubic-spline-book}
+
+\bibliography{references/referencias.bib}
+
+\end{document}
