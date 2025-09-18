@@ -1,0 +1,218 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts{}
+
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+\title{Convergencia en el método de Newton-Raphson\\}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} German Eduardo De Armas Castaño }
+	\IEEEauthorblockA{\textit{Universidad Tecnologica de Bolivar} \\
+		\textit{UTB}\\
+		Cartagena, Colombia \\
+		gdearmas@utb.edu.co}}
+
+\maketitle
+
+\bibliographystyle{IEEEtran}
+
+\begin{abstract}
+The Newton-Raphson method, also known simply as Newton's method, is an iterative algorithm used to approximate the roots or zeros of a real-valued function. It is particularly valuable for finding numerical solutions to nonlinear equations.
+
+This work delves into the convergence properties of the Newton-Raphson method from various theoretical and practical perspectives. We begin with a detailed review of the method's mathematical formulation, including the derivation of the iterative formula and its theoretical foundation. We then explore the conditions under which the method converges towards the root of the target function, as well as the circumstances under which it can diverge.
+
+Furthermore, we examine techniques and strategies to enhance the convergence of the method when dealing with functions exhibiting singularities, multiple roots, or complex non-linear behaviors. We discuss convergence acceleration methods in detail, including variants of the Newton-Raphson method and preconditioning techniques.
+
+\end{abstract}
+
+\section{Introducción}
+La resolución de ecuaciones es uno de los desafíos más frecuentes en matemáticas. Sin embargo, la complejidad algebraica de algunas ecuaciones puede convertir este proceso en una tarea tediosa y extensa.
+
+En el caso particular de la búsqueda de raíces en la ecuación f(x) = 0, la resolución es relativamente sencilla cuando se trata de ecuaciones lineales o cuadráticas. Incluso, existen fórmulas para resolver ecuaciones de tercer y cuarto grado, aunque estas son menos comunes.
+
+Sin embargo, para ecuaciones de quinto grado o superior, generalmente no se dispone de fórmulas algebraicas que permitan su resolución, tal como lo mencionó el matemático noruego Niels Henrik Abel (1802-1829) \cite{finney1980calculus}.
+
+El método de Newton-Raphson destaca por sus numerosas ventajas:
+
+a) Se aplica a ecuaciones de cualquier grado, incluyendo aquellas no algebraicas (transcendentes), gracias a su naturaleza iterativa.
+
+b) Ofrece una respuesta numérica, permitiendo refinar la aproximación al resultado con sucesivas iteraciones hasta alcanzar la precisión deseada.
+
+Este trabajo se enfoca en el análisis y la aplicación del método de Newton-Raphson, explorando su convergencia en diversos contextos y condiciones.
+
+
+
+
+
+\section{Teoría del método}
+
+El método de Newton-Raphson se basa en el Teorema de Bolzano para determinar las raíces de una función y = f(x). Este teorema establece que si una función continua se define en un intervalo cerrado, y toma valores diferentes en los extremos, entonces existe al menos un punto dentro del intervalo donde la función toma el valor promedio entre esos dos valores   existirá  un  valor de X dentro de dicho intervalo que representará la raíz(cero) de la función.  $[a,b]  f(a)*f(b)<0$
+\cite{spivak1970calculus}.
+
+\begin{figure} [h]
+    \centering
+    \includegraphics[width=\linewidth]{Images/Imagen1.png}
+    \caption{Funcion y=f[x]}
+    \label{fig:fig1}
+\end{figure}
+
+La convergencia del método de Newton-Raphson depende en gran medida de la elección del valor inicial ($x_0$). Este debe ser lo suficientemente cercano a la raíz buscada para que el proceso iterativo converja a la solución.. De forma generalizada, se obtiene la aproximación:
+
+\begin{equation}
+	x_{n + 1} = x_0 - \frac{f(x)}{f'(x)}
+\end{equation}
+
+\subsection{Condiciones de convergencia}
+
+Las condiciones de convergencia para el método de Newton-Raphson se pueden resumir de la siguiente manera:
+
+\begin{itemize}
+	\item Existencia de la Raíz: Se requiere que dentro de un intervalo
+	      de trabajo dado [a, b], la condición $f(a) * f(b) < 0$ sea satisfecha.
+
+	\item Unicidad de la Raíz:
+	      En el intervalo [a, b], la derivada de $f(x)$ no debe ser igual a cero.
+
+	\item Concavidad: La gráfica de la función $f(x)$ en el intervalo [a, b]
+	      debe ser cóncava, ya sea hacia arriba o hacia abajo. Esto se verifica
+	      asegurando que $f''(x) \leqslant 0$ o $f''(x) \geqslant 0$ para todo x en [a, b].
+
+	\item Intersección de la Tangente a $f(x)$ dentro de [a, b]:
+	      Es crucial garantizar que la tangente a la curva en el extremo del
+	      intervalo [a, b], donde $f'(x)$ es mínima, intersecte el eje $x$
+	      dentro de [a, b]. Esta condición asegura que la sucesión de
+	      valores de $x_i$ permanezca dentro de [a, b].
+
+	      \begin{equation*}
+		      \frac{\left\lvert f(x) \right\rvert }{\left\lvert f'(x) \right\rvert} \leqslant (b - a)
+	      \end{equation*}
+       Así pues, para que el método de Newton-Raphson converja, la función f(x) debe ser derivable en el intervalo considerado, y en dicho intervalo no debe tener puntos de inflexión, ni máximos ni mínimos. 
+
+       \begin{figure} [h]
+            \centering
+            \includegraphics[width=\linewidth]{Images/Imagen2.png}
+            \caption{}
+            \label{fig:fig2}
+       \end{figure}
+
+       \begin{figure} [h]
+            \centering
+            \includegraphics[width=\linewidth]{Images/Imagen3.png}
+            \caption{}
+            \label{fig:fig3}
+       \end{figure}  
+
+       
+\end{itemize}
+
+\section{Problemas del método}
+
+Como fue mencionado anteriormente, el método de Newton-Raphson, presenta algunas dificultades en ciertos casos.
+
+\begin{itemize}
+
+    \item En una de las aproximaciones  $x_n$,la derivada [ $f'$]
+        es cero,pero  [$F(xn)  \neq 0$]. Como resultado, la línea tangente de  $f$ en  $x_n$ no se interseca con el eje  x. Por lo tanto, no podemos continuar el proceso iterativo.
+
+	
+	\item Punto de inflexión [$F''(x) = 0$] en la vecindad de una raíz:
+        Un punto de inflexión es un punto donde la concavidad de la función cambia. En este punto, la segunda derivada de la función $F''(x)$ es igual a cero.
+	      La presencia de un punto de inflexión, en la cercanía de una raíz puede influir en el metodo de Newton-Raphson proporcionando una raíz falsa (Si la raíz falsa está más cerca del punto inicial que la raíz verdadera, el método puede converger a la raíz falsa en lugar de la raíz verdadera).
+
+	\item Tendencia del método a oscilar alrededor de un mínimo o un
+	      máximo local:
+	      el método de Newton-Raphson puede presentar una tendencia a oscilar alrededor de un mínimo o un máximo local en lugar de converger a la raíz. Esto se debe a que en estos puntos, la pendiente de la función es cero, lo que significa que el método de Newton-Raphson no puede determinar una dirección clara para avanzar hacia la raíz.
+
+
+
+	\item Valor inicial cercano a una raíz salta a una posición varias
+	      raíces más lejos:
+	      Si la función tiene regiones donde es altamente no lineal, el método de Newton-Raphson puede "saltar" a otras raíces o diverger si el punto inicial está demasiado cerca de estas regiones o si la derivada de la función cambia abruptamente cerca del punto inicial, el método puede no ser capaz de seguir la trayectoria de la raíz correctamente y puede converger hacia una raíz diferente.
+
+	\item Pendiente cero [$f'(x) = 0$] causa una división entre cero
+	      en la fórmula de Newton-Raphson:
+	      Cuando la primera derivada de la función es 0 [$f'(x) = 0$], se
+	      produce una división entre cero en la fórmula de Newton-Raphson,
+	      provocando que la solución se desplace horizontalmente y no
+	      intersecte el eje x. Este fenómeno puede resultar en una
+	      divergencia del método.
+       
+        \begin{figure} [h]
+            \centering
+            \includegraphics[width=\linewidth]{Images/Imagen4.png}
+            \caption{Si la suposición inicial  x0
+  está demasiado lejos de la raíz buscada, puede llevarnos a aproximaciones que se acerquen a una raíz diferente.}
+            \label{fig:fig4}
+       \end{figure}
+\end{itemize}
+
+\section{Soluciones a los problemas del método}
+
+Una vez identificados los problemas asociados al método de Newton-Raphson, es necesario considerar posibles soluciones para mitigar estas dificultades.
+
+\begin{itemize}
+	\item Punto de inflexión [$F''(x) = 0$] en la cercania de una raíz:
+	      \begin{itemize}
+		      \item  Elegir un punto inicial cerca de la solución puede mejorar significativamente las posibilidades de convergencia. Por lo cual no es descabellado usar técnicas de análisis gráfico para identificar
+		            la presencia de puntos de inflexión en la vecindad de las
+		            raíces antes de aplicar el método.
+
+		      \item  Combinar el método de Newton-Raphson con otros métodos numéricos puede mejorar la robustez y la velocidad de convergencia. Lo ideal es buscar metodos menos susceptibles a condiciones de
+		            inflexión para obtener una mejor aproximación inicial antes de aplicar  NewtonRaphson.
+		            
+        
+	      \end{itemize}
+
+	
+
+	
+	\item Pendiente cero [$f'(x) = 0$] causa una división entre cero en la
+	      fórmula de Newton-Raphson:
+	      \begin{itemize}
+		      \item Modificar la formulación del método para evitar la división
+		            por cero, por ejemplo, mediante la aplicación de técnicas de
+		            regularización.
+		      \item Explorar métodos alternativos, como el método de la
+		            secante, que no dependen de la primera derivada.
+
+	      \end{itemize}
+\end{itemize}
+
+\section{Raíces multiples}
+
+En el método de Newton-Raphson, una raíz múltiple se refiere a un valor de la variable independiente (x) para el cual la función y su derivada se igualan a cero. En otras palabras, la raíz aparece más de una vez en la ecuación. 
+La presencia de raíces múltiples provoca una convergencia lenta, lo cual disminuye significativamente su eficiencia.
+
+ \begin{figure} [h]
+            \centering
+            \includegraphics[width=\linewidth]{Images/Imagen5.png}
+            \caption{$F(x)=(x-2)^2$}
+            \label{fig:fig5}
+       \end{figure}
+
+Su raíz repetida en [$x=2$] tiene una derivada de cero en ese punto. 
+
+
+\section{Conclusiones}
+
+El método de Newton-Raphson, aunque es potente y eficaz para 
+la aproximación de raíces de ecuaciones no lineales, presenta ciertas 
+limitaciones e inconvenientes que pueden impedir el uso de la formulacion original afectando seriamente uno de sus puntos fuertes y es su convergencia. La 
+identificación de puntos de inflexión, la tendencia a oscilar alrededor 
+de mínimos o máximos locales y la presencia de raíces múltiples son aspectos claves que impactan dentro del metodo, pero con las debidas modificaciones o ajustes mencionados a lo largo del articulo se puede arreglar estos problemas en la mayoria de los casos. 
+
+\nocite{eljach2018eficacia}
+\nocite{urepublicana}
+\nocite{mathcad14}
+\nocite{}
+
+\bibliography{./Referencias/referencias.bib}
+
+\end{document}
